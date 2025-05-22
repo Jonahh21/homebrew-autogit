@@ -1,8 +1,8 @@
 class Autogit < Formula
   desc "Gestión automática de versiones semánticas en commits de Git"
   homepage "https://github.com/Jonahh21/homebrew-autogit"
-  url "https://github.com/Jonahh21/homebrew-autogit/releases/download/v1.6.0/autogit-1.6.0.tar.gz"
-  sha256 "316efe86ae73c3d582efddb9fc44f04dd17a3b15f12fdc5d1a885cbdcd8430e0"
+  url "https://github.com/Jonahh21/homebrew-autogit/releases/download/v1.7.0/autogit-1.7.0.tar.gz"
+  sha256 "d766e45ddf7f3439bb9f3898c61dec051e783e7932c56c9b9530d205b9df2961"
   license "MIT"
 
   def install
