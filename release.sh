@@ -43,6 +43,9 @@ git add "$FORMULA_PATH"
 git commit -m "release v$VERSION"
 git tag "v$VERSION"
 
+# 🚀 Push tag al remoto antes de crear el release
+git push origin "v$VERSION"
+
 # 🚀 Subir release a GitHub con el binario
 if command -v gh &>/dev/null; then
   gh release create "v$VERSION" dist/${TARBALL} --title "v$VERSION" --notes "Release $VERSION"
