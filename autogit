@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Archivo: autogit
+
+# Función para obtener la última versión tipo vX.X.X
+get_last_version() {
+  git log --grep="^v[0-9]\+\.[0-9]\+\.[0-9]\+:" --pretty=format:"%s" \
+  | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' \
+  | sort -V \
+  | tail -n 1
+}
+
+# Función para incrementar versión
+increment_version() {
+  local version=$1
+  local type=$2
+  IFS='.' read -r major minor patch <<<"${version//v/}"
+
+  case $type in
+    mayor)   major=$((major + 1)); minor=0; patch=0 ;;
+    minor)   minor=$((minor + 1)); patch=0 ;;
+    hotfix|hf) patch=$((patch + 1)) ;;
+    *) echo "Tipo inválido: $type"; exit 1 ;;
+  esac
+
+  echo "v$major.$minor.$patch"
+}
+
+# Función para reemplazar el último commit
+replace_commit() {
+  local new_version=$1
+  local old_msg=$(git log -1 --pretty=%B)
+  local clean_msg=$(echo "$old_msg" | sed -E 's/^v[0-9]+\.[0-9]+\.[0-9]+: //')
+  git commit --amend -m "$new_version: $clean_msg"
+}
+
+# Comandos
+case "$1" in
+  init)
+    ver=$(get_last_version)
+    echo "Última versión encontrada: ${ver:-v0.0.0}"
+    ;;
+
+  mayor|minor|hotfix|hf)
+    last_ver=$(get_last_version)
+    last_ver=${last_ver:-v0.0.0}
+    new_ver=$(increment_version "$last_ver" "$1")
+    replace_commit "$new_ver"
+    echo "Versión actualizada: $new_ver"
+    ;;
+
+  *)
+    echo "Uso: autogit [init|mayor|minor|hotfix|hf]"
+    ;;
+esac
